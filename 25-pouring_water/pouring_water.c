@@ -42,26 +42,19 @@ void insert(state *s) {
 
 state *dequeue() {
     state *removed;
-    int count = 0;
     if (queue_size == 0) {
         return NULL;
     } else if (queue_size == 1) {
         removed = head;
         head = NULL;
-        tail = NULL;
         queue_size--;
         return removed;
     } else {
-        removed = tail;
-        tail = head;
+        removed = head;
+        head = head->next;
+        queue_size--;
+        return removed;
     }
-    queue_size--;
-    while(count < queue_size-1) {
-        tail = tail->next;
-        count++;
-    }
-    tail->next = NULL;
-    return removed;
 }
 
 void printQueue() {
@@ -75,34 +68,6 @@ void printQueue() {
 int main() {
     initQueue();
     state inicio = {0,0,0};
-    state s2 = {1,1,0};
-    state s3 = {2,2,0};
-    state s4 = {3,3,0};
-    state s5 = {4,4,0};
-    insert(&inicio);
-    insert(&s2);
-    insert(&s3);
-    insert(&s4);
-    insert(&s5);
-
-    printQueue();
-
-    state *st0 = dequeue();
-    printQueue();
-    printf("removido: %d", st0->x);
-    printf("--------------------------\n");
-
-    st0 = dequeue();
-    printQueue();    
-    printf("removido: %d", st0->x);
-    printf("--------------------------\n");
-
-    st0 = dequeue();
-    printQueue();
-    printf("removido: %d", st0->x);
-    printf("--------------------------\n");
-
-    // printf("%d", st2->x);
-
+    
     return 0;
 }
