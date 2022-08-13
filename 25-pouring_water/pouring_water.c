@@ -4,13 +4,18 @@
 typedef struct State {
     int x;
     int y;
-    int visited;
+    int visited; // 0 non-visited; 1- being visited; 2-visited
+    struct State *pred;
     struct State *next;
 } state;
+
+int a = 3, b = 5, c = 4;
 
 int queue_size;
 state *head;
 state *tail;
+int **matriz;
+int solutionFound = 0; 
 
 int isEmpty() {
     if (queue_size == 0) {
@@ -65,9 +70,82 @@ void printQueue() {
     }
 }
 
+state *getNeighbors(state s) {
+    state *neighbors = malloc(sizeof(state)*6);
+
+    state n;
+    n = s;
+
+    n.x = 0;
+    neighbors[0] = n; // Esvaziar vaso A
+
+    n = s;
+    n.y = 0;
+    neighbors[1] = n; // Esvaziar vaso B
+
+    n = s;
+    n.x = a;
+    neighbors[2] = n; // Encher vaso A
+
+    n = s;
+    n.y = b;
+    neighbors[3] = n; //Encher vaso B
+
+    n = s;
+    if (s.x >= (b-s.y)) {
+        n.x = s.x - (b-s.y);
+        n.y = b;
+    } else {
+        n.x = 0;
+        n.y = s.y + s.x;
+    }
+    neighbors[4] = n; // Transferir de A para B
+
+    n = s;
+    if (s.y >= (a-s.x)) {
+        n.x = a;
+        n.y = (s.y-(a-s.x));
+    } else {
+        n.x = s.x + s.y;
+        n.y = 0;
+    }
+    neighbors[5] = n; // Trasnferir de B para A
+
+    return neighbors;
+}
+
+void bfs(state initial) {
+    // state *neighbors;
+    // initial.visited = 0;
+    // initQueue();
+    // insert(&initial);
+
+    // while (!isEmpty()) {
+    //     state *current = dequeue();
+
+    //     neighbors = getNeighbors(*current);
+
+
+    // }
+}
+
 int main() {
-    initQueue();
-    state inicio = {0,0,0};
-    
+    // state inicio = {0,0,0};
+    // bfs(inicio, c);
+
+    state s = {3,5};
+    state *n = getNeighbors(s);
+
+    printf("n[0]: (%d , %d)", n[0].x, n[0].y);
+    printf("visited:  %d", s.visited);
+    // printf("n[0]: (%d , %d)", n[0].x, n[0].y);
+    // printf("n[0]: (%d , %d)", n[0].x, n[0].y);
+    // printf("n[]: (%d , %d)", n[1]->x, n[1]->y);
+    // printf("n[]: (%d , %d)", n[]->x, n[]->y);
+    // printf("n[]: (%d , %d)", n[]->x, n[]->y);
+    // printf("n[]: (%d , %d)", n[]->x, n[]->y);
+    // printf("n[]: (%d , %d)", n[]->x, n[]->y);
+    // printf("n[]: (%d , %d)", n[]->x, n[]->y);
+
     return 0;
 }
