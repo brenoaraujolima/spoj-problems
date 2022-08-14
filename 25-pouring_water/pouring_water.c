@@ -4,24 +4,17 @@
 typedef struct State {
     int x;
     int y;
+    int distance;
     struct State *pred;
     struct State *next;
 } state;
 
 int a = 3, b = 5, c = 4;
 
-int queue_size;
-state *head;
-state *tail;
-int visited[4000][4000];
-int solutionFound = 0; 
+state *head, *tail;
 
-int isEmpty() {
-    if (queue_size == 0) {
-        return 1;
-    }
-    return 0;
-}
+int visited[4000][4000];
+int queue_size;
 
 void *initQueue() {
     head = (state *) malloc(sizeof(state));
@@ -61,40 +54,33 @@ state *dequeue() {
     }
 }
 
-void printQueue() {
-    printf("*******FILA******\n");
-    state *runner = head;
-    int cont = 0;
-    while(cont < queue_size) {
-        cont++;
-        printf("(%d,%d) -> ", runner->x, runner->y);
-        runner = runner->next;
-    }
-    printf("\n");
-}
-
 state *getNeighbors(state s) {
     state *neighbors = malloc(sizeof(state)*6);
 
     state n;
     n = s;
+    n.distance = s.distance + 1;
 
     n.x = 0;
     neighbors[0] = n; // Esvaziar vaso A
 
     n = s;
+    n.distance = s.distance + 1;
     n.y = 0;
     neighbors[1] = n; // Esvaziar vaso B
 
     n = s;
+    n.distance = s.distance + 1;
     n.x = a;
     neighbors[2] = n; // Encher vaso A
 
     n = s;
+    n.distance = s.distance + 1;
     n.y = b;
     neighbors[3] = n; //Encher vaso B
 
     n = s;
+    n.distance = s.distance + 1;
     if (s.x >= (b-s.y)) {
         n.x = s.x - (b-s.y);
         n.y = b;
@@ -105,6 +91,7 @@ state *getNeighbors(state s) {
     neighbors[4] = n; // Transferir de A para B
 
     n = s;
+    n.distance = s.distance + 1;
     if (s.y >= (a-s.x)) {
         n.x = a;
         n.y = (s.y-(a-s.x));
@@ -117,45 +104,50 @@ state *getNeighbors(state s) {
     return neighbors;
 }
 
-void bfs(state initial) {
+void printSolution(state s) {
+    int size = s.distance;
+    state solution[size];
+    while(s.x!=0 || s.y!=0) {
+        solution[s.distance-1] = s;
+        s = *s.pred;
+    }
+    printf("(0 , 0)\n");
+    for(int i=0; i<size; i++) {
+        printf("(%d , %d)\n", solution[i].x, solution[i].y);
+    }
+}
+
+int bfs(state initial) {
     state *n, *current;
 
     initQueue();
     insert(&initial);
 
-    int cont = 0;
-    while(!isEmpty() && cont<100) {
-        cont++;
+    while(queue_size != 0) {
         current = dequeue();
         visited[current->x][current->y] = 1;
 
         n = getNeighbors(*current);
 
         for(int i=0; i<6; i++) {
-            if(!visited[n[i].x][n[i].y]) {
-                printf("nao foi visitado: (%d,%d)\n", n[i].x, n[i].y);
+            if (!visited[n[i].x][n[i].y]) {
                 visited[n[i].x][n[i].y] = 1;
                 n[i].pred = current;
                 insert(&n[i]);
-            } else {
-                printf("ja foi visitado: (%d,%d)\n", n[i].x, n[i].y);
+                if (n[i].x==c || n[i].y==c) {
+                    printSolution(n[i]);
+                    return n[i].distance;
+                }
             }
         }
-        visited[current->x][current->y] = 2; 
-        printQueue();
+        visited[current->x][current->y] = 2;
     }
+    return -1;
 }
 
 int main() {
     state inicio = {0,0,0};
-    bfs(inicio);
-
+    int answer = bfs(inicio);
+    printf("Numero minimo de passos: %d\n", answer);
     return 0;
 }
-
-        // printf("n[0]: (%d , %d)\n", n[0].x, n[0].y);
-        // printf("n[1]: (%d , %d)\n", n[1].x, n[1].y);
-        // printf("n[2]: (%d , %d)\n", n[2].x, n[2].y);
-        // printf("n[3]: (%d , %d)\n", n[3].x, n[3].y);
-        // printf("n[4]: (%d , %d)\n", n[4].x, n[4].y);
-        // printf("n[5]: (%d , %d)\n", n[5].x, n[5].y);
