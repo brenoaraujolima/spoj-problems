@@ -1,6 +1,8 @@
 #include<stdio.h>
 #include <stdlib.h>
 
+int a = 3, b = 5, c = 4;
+
 typedef struct State {
     int x;
     int y;
@@ -8,8 +10,6 @@ typedef struct State {
     struct State *pred;
     struct State *next;
 } state;
-
-int a = 3, b = 5, c = 4;
 
 state *head, *tail;
 
@@ -140,7 +140,6 @@ int bfs(state initial) {
                 }
             }
         }
-        visited[current->x][current->y] = 2;
     }
     return -1;
 }
