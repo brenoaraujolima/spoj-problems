@@ -4,7 +4,6 @@
 typedef struct State {
     int x;
     int y;
-    int visited; // 0 non-visited; 1- being visited; 2-visited
     struct State *pred;
     struct State *next;
 } state;
@@ -14,7 +13,7 @@ int a = 3, b = 5, c = 4;
 int queue_size;
 state *head;
 state *tail;
-int **matriz;
+int visited[4000][4000];
 int solutionFound = 0; 
 
 int isEmpty() {
@@ -63,11 +62,15 @@ state *dequeue() {
 }
 
 void printQueue() {
+    printf("*******FILA******\n");
     state *runner = head;
-    while(runner != NULL) {
-        printf("%d\n", runner->x);
+    int cont = 0;
+    while(cont < queue_size) {
+        cont++;
+        printf("(%d,%d) -> ", runner->x, runner->y);
         runner = runner->next;
     }
+    printf("\n");
 }
 
 state *getNeighbors(state s) {
@@ -115,37 +118,44 @@ state *getNeighbors(state s) {
 }
 
 void bfs(state initial) {
-    // state *neighbors;
-    // initial.visited = 0;
-    // initQueue();
-    // insert(&initial);
+    state *n, *current;
 
-    // while (!isEmpty()) {
-    //     state *current = dequeue();
+    initQueue();
+    insert(&initial);
 
-    //     neighbors = getNeighbors(*current);
+    int cont = 0;
+    while(!isEmpty() && cont<100) {
+        cont++;
+        current = dequeue();
+        visited[current->x][current->y] = 1;
 
+        n = getNeighbors(*current);
 
-    // }
+        for(int i=0; i<6; i++) {
+            if(!visited[n[i].x][n[i].y]) {
+                printf("nao foi visitado: (%d,%d)\n", n[i].x, n[i].y);
+                visited[n[i].x][n[i].y] = 1;
+                n[i].pred = current;
+                insert(&n[i]);
+            } else {
+                printf("ja foi visitado: (%d,%d)\n", n[i].x, n[i].y);
+            }
+        }
+        visited[current->x][current->y] = 2; 
+        printQueue();
+    }
 }
 
 int main() {
-    // state inicio = {0,0,0};
-    // bfs(inicio, c);
-
-    state s = {3,5};
-    state *n = getNeighbors(s);
-
-    printf("n[0]: (%d , %d)", n[0].x, n[0].y);
-    printf("visited:  %d", s.visited);
-    // printf("n[0]: (%d , %d)", n[0].x, n[0].y);
-    // printf("n[0]: (%d , %d)", n[0].x, n[0].y);
-    // printf("n[]: (%d , %d)", n[1]->x, n[1]->y);
-    // printf("n[]: (%d , %d)", n[]->x, n[]->y);
-    // printf("n[]: (%d , %d)", n[]->x, n[]->y);
-    // printf("n[]: (%d , %d)", n[]->x, n[]->y);
-    // printf("n[]: (%d , %d)", n[]->x, n[]->y);
-    // printf("n[]: (%d , %d)", n[]->x, n[]->y);
+    state inicio = {0,0,0};
+    bfs(inicio);
 
     return 0;
 }
+
+        // printf("n[0]: (%d , %d)\n", n[0].x, n[0].y);
+        // printf("n[1]: (%d , %d)\n", n[1].x, n[1].y);
+        // printf("n[2]: (%d , %d)\n", n[2].x, n[2].y);
+        // printf("n[3]: (%d , %d)\n", n[3].x, n[3].y);
+        // printf("n[4]: (%d , %d)\n", n[4].x, n[4].y);
+        // printf("n[5]: (%d , %d)\n", n[5].x, n[5].y);
